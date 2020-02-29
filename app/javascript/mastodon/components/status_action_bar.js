@@ -173,9 +173,9 @@ class StatusActionBar extends ImmutablePureComponent {
     const account = status.get('account');
 
     if (relationship && relationship.get('blocking')) {
-      onBlock(status);
-    } else {
       onUnblock(account);
+    } else {
+      onBlock(status);
     }
   }
 
@@ -319,7 +319,7 @@ class StatusActionBar extends ImmutablePureComponent {
       replyTitle = intl.formatMessage(messages.replyAll);
     }
 
-    const shareButton = ('share' in navigator) && status.get('visibility') === 'public' && (
+    const shareButton = ('share' in navigator) && publicStatus && (
       <IconButton className='status__action-bar-button' title={intl.formatMessage(messages.share)} icon='share-alt' onClick={this.handleShareClick} />
     );
 

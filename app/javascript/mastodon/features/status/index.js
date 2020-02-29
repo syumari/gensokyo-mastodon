@@ -281,6 +281,22 @@ class Status extends ImmutablePureComponent {
     this.props.dispatch(openModal('VIDEO', { media, time }));
   }
 
+  handleHotkeyOpenMedia = e => {
+    const status = this._properStatus();
+
+    e.preventDefault();
+
+    if (status.get('media_attachments').size > 0) {
+      if (status.getIn(['media_attachments', 0, 'type']) === 'audio') {
+        // TODO: toggle play/paused?
+      } else if (status.getIn(['media_attachments', 0, 'type']) === 'video') {
+        this.handleOpenVideo(status.getIn(['media_attachments', 0]), 0);
+      } else {
+        this.handleOpenMedia(status.get('media_attachments'), 0);
+      }
+    }
+  }
+
   handleMuteClick = (account) => {
     this.props.dispatch(initMuteModal(account));
   }
@@ -506,6 +522,7 @@ class Status extends ImmutablePureComponent {
       openProfile: this.handleHotkeyOpenProfile,
       toggleHidden: this.handleHotkeyToggleHidden,
       toggleSensitive: this.handleHotkeyToggleSensitive,
+      openMedia: this.handleHotkeyOpenMedia,
     };
 
     return (
@@ -525,6 +542,7 @@ class Status extends ImmutablePureComponent {
             <HotKeys handlers={handlers}>
               <div className={classNames('focusable', 'detailed-status__wrapper')} tabIndex='0' aria-label={textForScreenReader(intl, status, false)}>
                 <DetailedStatus
+                  key={`details-${status.get('id')}`}
                   status={status}
                   onOpenVideo={this.handleOpenVideo}
                   onOpenMedia={this.handleOpenMedia}
@@ -535,6 +553,7 @@ class Status extends ImmutablePureComponent {
                 />
 
                 <ActionBar
+                  key={`action-bar-${status.get('id')}`}
                   status={status}
                   onReply={this.handleReplyClick}
                   onFavourite={this.handleFavouriteClick}
